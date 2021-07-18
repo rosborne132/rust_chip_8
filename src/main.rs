@@ -7,14 +7,13 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
-use std::env;
-use std::path::Path;
+use std::{env, error, path};
 
 use components::audio::Sound;
 use components::cartridge;
 use components::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH};
 
-fn main() {
+fn main() -> Result<(), Box<dyn error::Error>> {
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
         println!("syntax: chip_8_rust [rom_file]");
@@ -23,7 +22,7 @@ fn main() {
     let mut rom = cartridge::Rom::new();
     if !rom.load_application(&args[1]) {
         println!("Failed to load rom");
-        return;
+        return Ok(());
     }
 
     let sdl_context = sdl2::init().unwrap();
@@ -46,7 +45,7 @@ fn main() {
         .map_err(|e| e.to_string())
         .unwrap();
     let mut _audio_device = None;
-    let has_sound = Path::new("beep.wav").exists();
+    let has_sound = path::Path::new("beep.wav").exists();
     let mut timer = 0;
 
     'mainloop: loop {
@@ -341,4 +340,7 @@ fn main() {
             rom.beep_flag = false;
         }
     }
+
+    println!("Tearing down emu.");
+    return Ok(());
 }

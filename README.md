@@ -1,8 +1,6 @@
 # Chip-8 Emulator
 
-This is emulator is built in Rust, for the purpose of understanding/learning how to build an emulator. 
-
-## Controls
+This is emulator is built in Rust, for the purpose of understanding/learning how to build an emulator.
 
 ## Setup
 Install `sdl2`
@@ -25,7 +23,8 @@ z x c v
 ```
 
 ## Todos
-1. Create a separate thread to process video. 
+1. Create a separate thread to process video.
+2. Replace sdl2 with std or other libs.
 
 ## Resources
 - [Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
