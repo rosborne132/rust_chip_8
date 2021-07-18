@@ -57,7 +57,204 @@ fn main() {
                     ..
                 }
                 | Event::Quit { .. } => break 'mainloop,
-                // TODO: Add other keycodes.
+                // ------------------------------
+                // ---------- key down ----------
+                // ------------------------------
+                Event::KeyDown {
+                    keycode: Some(Keycode::Num1),
+                    ..
+                } => {
+                    rom.key[1] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Num2),
+                    ..
+                } => {
+                    rom.key[2] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Num3),
+                    ..
+                } => {
+                    rom.key[3] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Num4),
+                    ..
+                } => {
+                    rom.key[0xC] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Q),
+                    ..
+                } => {
+                    rom.key[4] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::W),
+                    ..
+                } => {
+                    rom.key[5] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::E),
+                    ..
+                } => {
+                    rom.key[6] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::R),
+                    ..
+                } => {
+                    rom.key[0xD] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::A),
+                    ..
+                } => {
+                    rom.key[7] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::S),
+                    ..
+                } => {
+                    rom.key[8] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::D),
+                    ..
+                } => {
+                    rom.key[9] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::F),
+                    ..
+                } => {
+                    rom.key[0xE] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::Z),
+                    ..
+                } => {
+                    rom.key[0xA] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::X),
+                    ..
+                } => {
+                    rom.key[0] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::C),
+                    ..
+                } => {
+                    rom.key[0xB] = 1;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::V),
+                    ..
+                } => {
+                    rom.key[0xF] = 1;
+                }
+                // ------------------------------
+                // ----------- key up -----------
+                // ------------------------------
+                Event::KeyUp {
+                    keycode: Some(Keycode::Num1),
+                    ..
+                } => {
+                    rom.key[1] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::Num2),
+                    ..
+                } => {
+                    rom.key[2] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::Num3),
+                    ..
+                } => {
+                    rom.key[3] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::Num4),
+                    ..
+                } => {
+                    rom.key[0xC] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::Q),
+                    ..
+                } => {
+                    rom.key[4] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::W),
+                    ..
+                } => {
+                    rom.key[5] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::E),
+                    ..
+                } => {
+                    rom.key[6] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::R),
+                    ..
+                } => {
+                    rom.key[0xD] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::A),
+                    ..
+                } => {
+                    rom.key[7] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::S),
+                    ..
+                } => {
+                    rom.key[8] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::D),
+                    ..
+                } => {
+                    rom.key[9] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::F),
+                    ..
+                } => {
+                    rom.key[0xE] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::Z),
+                    ..
+                } => {
+                    rom.key[0xA] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::X),
+                    ..
+                } => {
+                    rom.key[0] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::C),
+                    ..
+                } => {
+                    rom.key[0xB] = 0;
+                }
+                Event::KeyUp {
+                    keycode: Some(Keycode::V),
+                    ..
+                } => {
+                    rom.key[0xF] = 0;
+                }
                 _ => {}
             }
         }
