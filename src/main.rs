@@ -11,6 +11,7 @@ use std::env;
 use std::path::Path;
 
 use components::audio;
+use components::cartridge;
 use components::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH};
 
 fn main() {
@@ -20,6 +21,11 @@ fn main() {
     }
 
     // TODO: Build vm to read roms
+    let mut rom = cartridge::Rom::new();
+    if !rom.load_application(&args[1]) {
+        println!("Failed to load rom");
+        return;
+    }
     // let mut vm = dale8::VM::new();
     // if !vm.load_application(&args[1]) {
     //     println!("failed load rom");
@@ -62,23 +68,22 @@ fn main() {
                     ..
                 }
                 | Event::Quit { .. } => break 'mainloop,
-                // Add other keycodes
+                // TODO: Add other keycodes.
                 _ => {}
             }
         }
 
         if timer == 2000 {
-            // TODO: add emulate cycle.
-            // vm.emulate_cycle();
+            rom.opcode();
             timer = 0;
         } else {
             timer += 1;
         }
 
         // TODO: add draw flag.
-        // if vm.draw_flag {}
+        // if rom.draw_flag {}
 
         // TODO: add beep flag.
-        // if vm.beep_flag {}
+        // if rom.beep_flag {}
     }
 }
