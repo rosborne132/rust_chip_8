@@ -2,16 +2,16 @@ extern crate sdl2;
 
 mod components;
 
-use std::env;
-use std::path::Path;
 use sdl2::audio::{AudioCVT, AudioCallback, AudioSpecDesired, AudioSpecWAV};
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::PixelFormatEnum;
 use sdl2::rect::Rect;
+use std::env;
+use std::path::Path;
 
 use components::audio;
-use components::constants::{DISPLAY_WIDTH, DISPLAY_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT};
+use components::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -58,8 +58,10 @@ fn main() {
         for event in sdl_context.event_pump().unwrap().poll_iter() {
             match event {
                 Event::KeyDown {
-                    keycode: Some(Keycode::Escape), ..
-                } | Event::Quit { .. } => break 'mainloop,
+                    keycode: Some(Keycode::Escape),
+                    ..
+                }
+                | Event::Quit { .. } => break 'mainloop,
                 // Add other keycodes
                 _ => {}
             }

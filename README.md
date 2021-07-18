@@ -14,3 +14,7 @@ brew install sdl2
 ```bash
 cargo run programs/tetris.c8
 ```
+
+## Resources
+- [Chip-8 Technical Reference](http://devernay.free.fr/hacks/chip8/C8TECH10.HTM)
+- [Mattmikolay Chip-8 Technical Reference](https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Technical-Reference)
