@@ -1,9 +1,9 @@
 use sdl2::audio::AudioCallback;
 
 pub struct Sound {
-    data: Vec<u8>,
-    volume: f32,
-    pos: usize,
+    pub data: Vec<u8>,
+    pub volume: f32,
+    pub pos: usize,
 }
 
 impl AudioCallback for Sound {

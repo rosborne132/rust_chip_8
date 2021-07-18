@@ -2,7 +2,7 @@ extern crate sdl2;
 
 mod components;
 
-use sdl2::audio::{AudioCVT, AudioCallback, AudioSpecDesired, AudioSpecWAV};
+use sdl2::audio::{AudioCVT, AudioSpecDesired, AudioSpecWAV};
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 use sdl2::pixels::PixelFormatEnum;
@@ -10,7 +10,7 @@ use sdl2::rect::Rect;
 use std::env;
 use std::path::Path;
 
-use components::audio;
+use components::audio::Sound;
 use components::cartridge;
 use components::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH};
 
@@ -20,17 +20,11 @@ fn main() {
         println!("syntax: chip_8_rust [rom_file]");
     }
 
-    // TODO: Build vm to read roms
     let mut rom = cartridge::Rom::new();
     if !rom.load_application(&args[1]) {
         println!("Failed to load rom");
         return;
     }
-    // let mut vm = dale8::VM::new();
-    // if !vm.load_application(&args[1]) {
-    //     println!("failed load rom");
-    //     return;
-    // }
 
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
@@ -41,23 +35,18 @@ fn main() {
         .build()
         .map_err(|e| e.to_string())
         .unwrap();
-
     let mut canvas = window
         .into_canvas()
         .build()
         .map_err(|e| e.to_string())
         .unwrap();
-
     let texture_creator = canvas.texture_creator();
-
     let mut texture = texture_creator
         .create_texture_streaming(PixelFormatEnum::RGB24, SCREEN_WIDTH, SCREEN_HEIGHT)
         .map_err(|e| e.to_string())
         .unwrap();
-
-    // let mut _audio_device = None;
+    let mut _audio_device = None;
     let has_sound = Path::new("beep.wav").exists();
-
     let mut timer = 0;
 
     'mainloop: loop {
@@ -80,10 +69,79 @@ fn main() {
             timer += 1;
         }
 
-        // TODO: add draw flag.
-        // if rom.draw_flag {}
+        if rom.draw_flag {
+            texture
+                .with_lock(None, |buffer: &mut [u8], pitch: usize| {
+                    for y in 0..SCREEN_HEIGHT as usize {
+                        for x in 0..SCREEN_WIDTH as usize {
+                            let offset: usize = y * pitch + x * 3;
+                            let mut color: u8 = 0;
+                            if rom.gfx[((y * SCREEN_WIDTH as usize) + x) as usize] != 0 {
+                                color = 255;
+                            }
+                            buffer[offset] = color;
+                            buffer[offset + 1] = color;
+                            buffer[offset + 2] = color;
+                        }
+                    }
+                })
+                .unwrap();
 
-        // TODO: add beep flag.
-        // if rom.beep_flag {}
+            canvas.clear();
+            canvas
+                .copy(
+                    &texture,
+                    None,
+                    Some(Rect::new(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)),
+                )
+                .unwrap();
+            canvas.present();
+
+            rom.draw_flag = false;
+        }
+
+        if rom.beep_flag {
+            if has_sound {
+                let desired_spec = AudioSpecDesired {
+                    freq: Some(44_100),
+                    channels: Some(1), // mono
+                    samples: None,     // default
+                };
+
+                _audio_device = Some(Box::new(
+                    audio_subsystem
+                        .open_playback(None, &desired_spec, |spec| {
+                            let wav = AudioSpecWAV::load_wav("beep.wav")
+                                .expect("could not load test WAV file");
+                            let cvt = AudioCVT::new(
+                                wav.format,
+                                wav.channels,
+                                wav.freq,
+                                spec.format,
+                                spec.channels,
+                                spec.freq,
+                            )
+                            .expect("could not convert WAV file");
+                            let data = cvt.convert(wav.buffer().to_vec());
+
+                            Sound {
+                                data,
+                                volume: 0.25,
+                                pos: 0,
+                            }
+                        })
+                        .unwrap(),
+                ));
+
+                // start playback
+                if let Some(ref dev) = _audio_device {
+                    dev.resume();
+                }
+            } else {
+                println!("BEEP");
+            }
+
+            rom.beep_flag = false;
+        }
     }
 }
