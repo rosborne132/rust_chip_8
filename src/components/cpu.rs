@@ -4,7 +4,7 @@ use std::io::prelude::*;
 
 use super::constants::FONTSET;
 
-pub struct Rom {
+pub struct Cpu {
     pc: u16,
     opcode: u16,
     ir: u16,
@@ -24,9 +24,9 @@ pub struct Rom {
     pub beep_flag: bool,
 }
 
-impl Rom {
+impl Cpu {
     pub fn new() -> Self {
-        let mut rom = Self {
+        let mut cpu = Self {
             pc: 0x200, // starts at 0x200
             opcode: 0,
             ir: 0,
@@ -48,10 +48,10 @@ impl Rom {
 
         // load fontset
         for i in 0..80 {
-            rom.memory[i] = FONTSET[i];
+            cpu.memory[i] = FONTSET[i];
         }
 
-        return rom;
+        return cpu;
     }
 
     pub fn opcode(&mut self) {

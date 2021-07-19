@@ -10,8 +10,8 @@ use sdl2::rect::Rect;
 use std::{env, error, path};
 
 use components::audio::Sound;
-use components::cartridge;
 use components::constants::{DISPLAY_HEIGHT, DISPLAY_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH};
+use components::cpu::Cpu;
 
 fn main() -> Result<(), Box<dyn error::Error>> {
     let args: Vec<String> = env::args().collect();
@@ -19,8 +19,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
         println!("syntax: chip_8_rust [rom_file]");
     }
 
-    let mut rom = cartridge::Rom::new();
-    if !rom.load_application(&args[1]) {
+    let mut cpu = Cpu::new();
+    if !cpu.load_application(&args[1]) {
         println!("Failed to load rom");
         return Ok(());
     }
@@ -63,97 +63,97 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                     keycode: Some(Keycode::Num1),
                     ..
                 } => {
-                    rom.key[1] = 1;
+                    cpu.key[1] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Num2),
                     ..
                 } => {
-                    rom.key[2] = 1;
+                    cpu.key[2] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Num3),
                     ..
                 } => {
-                    rom.key[3] = 1;
+                    cpu.key[3] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Num4),
                     ..
                 } => {
-                    rom.key[0xC] = 1;
+                    cpu.key[0xC] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Q),
                     ..
                 } => {
-                    rom.key[4] = 1;
+                    cpu.key[4] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::W),
                     ..
                 } => {
-                    rom.key[5] = 1;
+                    cpu.key[5] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::E),
                     ..
                 } => {
-                    rom.key[6] = 1;
+                    cpu.key[6] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::R),
                     ..
                 } => {
-                    rom.key[0xD] = 1;
+                    cpu.key[0xD] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::A),
                     ..
                 } => {
-                    rom.key[7] = 1;
+                    cpu.key[7] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::S),
                     ..
                 } => {
-                    rom.key[8] = 1;
+                    cpu.key[8] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::D),
                     ..
                 } => {
-                    rom.key[9] = 1;
+                    cpu.key[9] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::F),
                     ..
                 } => {
-                    rom.key[0xE] = 1;
+                    cpu.key[0xE] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::Z),
                     ..
                 } => {
-                    rom.key[0xA] = 1;
+                    cpu.key[0xA] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::X),
                     ..
                 } => {
-                    rom.key[0] = 1;
+                    cpu.key[0] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::C),
                     ..
                 } => {
-                    rom.key[0xB] = 1;
+                    cpu.key[0xB] = 1;
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::V),
                     ..
                 } => {
-                    rom.key[0xF] = 1;
+                    cpu.key[0xF] = 1;
                 }
                 // ------------------------------
                 // ----------- key up -----------
@@ -162,117 +162,118 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                     keycode: Some(Keycode::Num1),
                     ..
                 } => {
-                    rom.key[1] = 0;
+                    cpu.key[1] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::Num2),
                     ..
                 } => {
-                    rom.key[2] = 0;
+                    cpu.key[2] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::Num3),
                     ..
                 } => {
-                    rom.key[3] = 0;
+                    cpu.key[3] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::Num4),
                     ..
                 } => {
-                    rom.key[0xC] = 0;
+                    cpu.key[0xC] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::Q),
                     ..
                 } => {
-                    rom.key[4] = 0;
+                    cpu.key[4] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::W),
                     ..
                 } => {
-                    rom.key[5] = 0;
+                    cpu.key[5] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::E),
                     ..
                 } => {
-                    rom.key[6] = 0;
+                    cpu.key[6] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::R),
                     ..
                 } => {
-                    rom.key[0xD] = 0;
+                    cpu.key[0xD] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::A),
                     ..
                 } => {
-                    rom.key[7] = 0;
+                    cpu.key[7] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::S),
                     ..
                 } => {
-                    rom.key[8] = 0;
+                    cpu.key[8] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::D),
                     ..
                 } => {
-                    rom.key[9] = 0;
+                    cpu.key[9] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::F),
                     ..
                 } => {
-                    rom.key[0xE] = 0;
+                    cpu.key[0xE] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::Z),
                     ..
                 } => {
-                    rom.key[0xA] = 0;
+                    cpu.key[0xA] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::X),
                     ..
                 } => {
-                    rom.key[0] = 0;
+                    cpu.key[0] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::C),
                     ..
                 } => {
-                    rom.key[0xB] = 0;
+                    cpu.key[0xB] = 0;
                 }
                 Event::KeyUp {
                     keycode: Some(Keycode::V),
                     ..
                 } => {
-                    rom.key[0xF] = 0;
+                    cpu.key[0xF] = 0;
                 }
                 _ => {}
             }
         }
 
         if timer == 2000 {
-            rom.opcode();
+            cpu.opcode();
             timer = 0;
         } else {
             timer += 1;
         }
 
-        if rom.draw_flag {
+        if cpu.draw_flag {
+            // Update texture
             texture
                 .with_lock(None, |buffer: &mut [u8], pitch: usize| {
                     for y in 0..SCREEN_HEIGHT as usize {
                         for x in 0..SCREEN_WIDTH as usize {
                             let offset: usize = y * pitch + x * 3;
                             let mut color: u8 = 0;
-                            if rom.gfx[((y * SCREEN_WIDTH as usize) + x) as usize] != 0 {
+                            if cpu.gfx[((y * SCREEN_WIDTH as usize) + x) as usize] != 0 {
                                 color = 255;
                             }
                             buffer[offset] = color;
@@ -284,6 +285,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                 .unwrap();
 
             canvas.clear();
+
+            // Copy over new texture to canvas
             canvas
                 .copy(
                     &texture,
@@ -291,12 +294,14 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                     Some(Rect::new(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)),
                 )
                 .unwrap();
+
+            // display new changes to canvas
             canvas.present();
 
-            rom.draw_flag = false;
+            cpu.draw_flag = false;
         }
 
-        if rom.beep_flag {
+        if cpu.beep_flag {
             if has_sound {
                 let desired_spec = AudioSpecDesired {
                     freq: Some(44_100),
@@ -337,7 +342,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                 println!("BEEP");
             }
 
-            rom.beep_flag = false;
+            cpu.beep_flag = false;
         }
     }
 
