@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 
 use super::constants::FONTSET;
+use super::keypad::Keypad;
 
 pub struct Cpu {
     pc: u16,
@@ -15,13 +16,13 @@ pub struct Cpu {
     memory: [u8; 4096],
 
     pub gfx: [u8; 2048],
-    pub key: [u8; 16],
 
     delay_timer: u8,
     sound_timer: u8,
 
     pub draw_flag: bool,
     pub beep_flag: bool,
+    pub keypad: Keypad,
 }
 
 impl Cpu {
@@ -37,13 +38,13 @@ impl Cpu {
             memory: [0; 4096],
 
             gfx: [0; 2048],
-            key: [0; 16],
 
             delay_timer: 0,
             sound_timer: 0,
 
             draw_flag: true,
             beep_flag: false,
+            keypad: Keypad::new(),
         };
 
         // load fontset
@@ -295,7 +296,9 @@ impl Cpu {
                 match self.opcode & 0x00FF {
                     // EX9E: skips the next instruction if the key stored in VX is pressed
                     0x009E => {
-                        if self.key[self.v[((self.opcode & 0x0F00) >> 8) as usize] as usize] != 0 {
+                        if self.keypad.key[self.v[((self.opcode & 0x0F00) >> 8) as usize] as usize]
+                            != 0
+                        {
                             self.pc += 4;
                         } else {
                             self.pc += 2;
@@ -304,7 +307,9 @@ impl Cpu {
 
                     // EXA1: skips the next instruction if the key stored in VX isn't pressed
                     0x00A1 => {
-                        if self.key[self.v[((self.opcode & 0x0F00) >> 8) as usize] as usize] == 0 {
+                        if self.keypad.key[self.v[((self.opcode & 0x0F00) >> 8) as usize] as usize]
+                            == 0
+                        {
                             self.pc += 4;
                         } else {
                             self.pc += 2;
@@ -330,7 +335,7 @@ impl Cpu {
                         let mut key_press = false;
 
                         for i in 0..16 {
-                            if self.key[i] != 0 {
+                            if self.keypad.key[i] != 0 {
                                 self.v[((self.opcode & 0x0F00) >> 8) as usize] = i as u8;
                                 key_press = true;
                             }
